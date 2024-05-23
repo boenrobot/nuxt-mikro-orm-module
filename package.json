@@ -1,0 +1,61 @@
+{
+  "name": "nuxt-mikro-orm-module",
+  "version": "1.0.0",
+  "description": "Nuxt MikroORM module",
+  "license": "LGPL-2.1-only",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.11.2",
+    "defu": "^6.1.4"
+  },
+  "peerDependencies": {
+    "@mikro-orm/core": "*",
+    "h3": "^1.11.1",
+    "nitropack": "^2.9.6"
+  },
+  "devDependencies": {
+    "@mikro-orm/core": "*",
+    "@mikro-orm/mysql": "*",
+    "@nuxt/devtools": "^1.3.1",
+    "@nuxt/eslint-config": "^0.3.12",
+    "@nuxt/module-builder": "^0.6.0",
+    "@nuxt/schema": "^3.11.2",
+    "@nuxt/test-utils": "^3.13.0",
+    "@types/node": "^20.12.12",
+    "changelogen": "^0.5.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "nuxi": "^3.11.1",
+    "nuxt": "^3.11.2",
+    "typescript": "latest",
+    "vite": "^5.2.11",
+    "vitest": "^1.6.0",
+    "vue": "^3.4.27",
+    "vue-router": "^4.3.2",
+    "vue-tsc": "^2.0.19"
+  },
+  "packageManager": "yarn@4.2.2+sha256.1aa43a5304405be7a7cb9cb5de7b97de9c4e8ddd3273e4dad00d6ae3eb39f0ef"
+}
