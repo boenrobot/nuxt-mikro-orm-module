@@ -25,7 +25,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nuxt/kit": "^3.11.2",
@@ -37,6 +38,8 @@
     "nitropack": "^2.9.6"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@mikro-orm/core": "*",
     "@mikro-orm/mysql": "*",
     "@nuxt/devtools": "^1.3.1",
@@ -48,6 +51,7 @@
     "changelogen": "^0.5.5",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
+    "husky": "^9.0.11",
     "nuxi": "^3.11.1",
     "nuxt": "^3.11.2",
     "typescript": "latest",

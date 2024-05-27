@@ -5,8 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import {type EntityManager} from "@mikro-orm/mysql";
+import { type EntityManager } from "@mikro-orm/mysql";
 
-const em: EntityManager = useEntityManager();
+const event = useRequestEvent()!;
+const em = useEntityManager<EntityManager>(event);
 const productName = (await em.execute<[{name: string}]>('SELECT name FROM products LIMIT 1'))[0].name;
 </script>

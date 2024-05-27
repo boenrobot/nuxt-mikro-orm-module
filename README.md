@@ -13,17 +13,25 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add nuxt-mikro-orm-module
 ```
 
-After that, a plugin needs to be created, which calls the "mikroOrm:create" hook.
-If multiple MikroORM instances are required, this hook may be called multiple times, with different names.
-The plugin should ideally call this hook before the server is ready.
+After that, ideally in a Nitro plugin, call initOrm() with the instance's config.
 
-The hook "mikroOrm:init" will be called for every new instance.
+Call useEntityManager() in a request context to get a forked EntityManager you can immediately use.
+If you are working in a different context, such as a cron job, you may call useOrm(), and manually call `fork()` to get a locally scoped EntityManager.
 
-## Helper functions
+## API
 
-- `getEntityManager(name?: string)` - Get an entity manager with the current request context. Intended for use in server components.
-- `useOrm(name?: string)` - Get the MikroORM instance. Intended for use in server components.
+- `initOrm<T extends MikroOrmInstance = MikroOrmInstance>(config: ReturnType<typeof defineConfig>, name: string = 'default', forkOptionsFactory?: (event: H3Event<EventHandlerRequest>, name: string) => ForkOptions|undefined): Promise<T>` - Initialize a MikroORM instance with the given config. Optionally provide a name and fork options callback (called on each request where EntityManager is used; must not be async). Returns a promise that resolves with the initialized MikroORM instance.
+- `useEntityManager<T extends EntityManager = EntityManager>(event: H3Event<EventHandlerRequest>, name: string = 'default'): T` - Get an entity manager with the current request context.
+- `useOrm<T extends MikroOrmInstance = MikroOrmInstance>(name: string = 'default'): T` - Get the MikroORM instance.
+- `closeOrm(name: string = 'default', force: boolean = false)` - Close an existing MikroORM instance. The name also becomes available for reuse after close.
 
+## Module options / Runtime options
+
+This module's options are used as defaults for runtime options, under the `mikroOrm` key.
+
+Available options:
+
+- `forkOptions` - Default fork options when calling initOrm() without a `forkOptionsFactory`, or when the `forkOptionsFactory` function returns undefined.
 
 ## Contribution
 
