@@ -1,5 +1,5 @@
 import { initOrm } from "#imports";
-import { defineConfig, type EntityManager, type MikroORM } from "@mikro-orm/mysql";
+import { defineConfig, type MikroORM } from "@mikro-orm/mysql";
 
 export default defineNitroPlugin(async (_nitro) => {
   const orm = await initOrm<MikroORM>(defineConfig({
@@ -14,7 +14,7 @@ export default defineNitroPlugin(async (_nitro) => {
   }));
 
   await orm.schema.ensureDatabase({create: true});
-  const em = orm.em as EntityManager;
+  const em = orm.em;
   await em.execute(`
 CREATE TABLE IF NOT EXISTS \`products\`
 (

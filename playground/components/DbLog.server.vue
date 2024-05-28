@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { type EntityManager } from "@mikro-orm/mysql";
+import { type EntityManager } from "@mikro-orm/knex";
 
 const event = useRequestEvent()!;
 const em = useEntityManager<EntityManager>(event);
