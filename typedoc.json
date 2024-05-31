@@ -1,0 +1,9 @@
+{
+  "out": "docs",
+  "readme": "none",
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "excludeExternals": true,
+  "basePath": "src",
+  "useTsLinkResolution": true
+}

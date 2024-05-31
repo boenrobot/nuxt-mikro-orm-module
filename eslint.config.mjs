@@ -2,7 +2,7 @@
 import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
-export default createConfigForNuxt({
+const config = await createConfigForNuxt({
   features: {
     // Rules for module authors
     tooling: true,
@@ -13,6 +13,5 @@ export default createConfigForNuxt({
     ],
   },
 })
-  .append(
-    // your custom flat config here...
-  )
+  .override(0, { ignores: ['docs/**']});
+export default config;

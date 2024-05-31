@@ -1,8 +1,8 @@
-import { initOrm } from "#imports";
 import { defineConfig, type MikroORM } from "@mikro-orm/mysql";
+import consola from "consola";
 
-export default defineNitroPlugin(async (_nitro) => {
-  const orm = await initOrm<MikroORM>(defineConfig({
+export default defineNitroPlugin(async (nitro) => {
+  const orm = await registerGlobalOrm<MikroORM>(nitro, defineConfig({
     host: '127.0.0.1',
     user: 'root',
     password: '',
@@ -33,4 +33,5 @@ INSERT INTO products SET name = 'product 1'
 INSERT INTO products SET name = 'product 2'
 `);
   }
+  consola.success('DB initialized');
 });

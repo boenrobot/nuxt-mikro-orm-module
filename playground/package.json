@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",
+    "prod": "node ./.output/server/index.mjs",
     "build": "nuxi build",
     "generate": "nuxi generate"
   },

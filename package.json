@@ -16,9 +16,13 @@
   "files": [
     "dist"
   ],
+  "workspaces": [
+    "./test/fixtures/*"
+  ],
   "scripts": {
     "prepack": "nuxt-module-build build",
-    "dev": "nuxi dev playground",
+    "dev": "nuxi dev playground --inspect",
+    "doc": "yarn run typedoc",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
@@ -54,6 +58,7 @@
     "husky": "^9.0.11",
     "nuxi": "^3.11.1",
     "nuxt": "^3.11.2",
+    "typedoc": "^0.25.13",
     "typescript": "latest",
     "vite": "^5.2.11",
     "vitest": "^1.6.0",

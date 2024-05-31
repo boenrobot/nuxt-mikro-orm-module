@@ -1,5 +1,17 @@
 {
   "private": true,
   "name": "basic",
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "dev": "nuxi dev",
+    "prod": "node ./.output/server/index.mjs",
+    "build": "nuxi build",
+    "generate": "nuxi generate"
+  },
+  "dependencies": {
+    "nuxt": "^3.11.2"
+  },
+  "devDependencies": {
+    "@mikro-orm/mysql": "^6"
+  }
 }

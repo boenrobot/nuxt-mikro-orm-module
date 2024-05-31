@@ -1,8 +1,9 @@
 export default defineNuxtConfig({
   modules: ['../src/module'],
-  runtimeConfig: {
-    mikroOrm: {}
+  experimental: {
+    componentIslands: true,
   },
+  logLevel: "verbose",
   devtools: {
     enabled: true,
   },

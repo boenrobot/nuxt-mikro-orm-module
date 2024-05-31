@@ -9,7 +9,7 @@ describe('ssr', async () => {
 
   it('renders the index page', async () => {
     // Get response to a server-rendered page with `$fetch`.
-    const html = await $fetch('/')
+    const html = await $fetch('/');
     expect(html).toContain('<div>basic</div>');
     expect(html).toContain('This is only rendered on the server. Product: product 1');
   });

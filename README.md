@@ -1,6 +1,6 @@
 # Nuxt MikroORM module
 
-My new Nuxt module for doing amazing things.
+Nuxt module for easy integration with MikroORM into your Nuxt application.
 
 - [✨ &nbsp;Release Notes](/CHANGELOG.md)
 - [🏀 Online playground](https://stackblitz.com/github/boenrobot/nuxt-mikro-orm-module?file=playground%2Fapp.vue)
@@ -13,25 +13,46 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add nuxt-mikro-orm-module
 ```
 
-After that, ideally in a Nitro plugin, call initOrm() with the instance's config.
+After that, ideally in a Nitro plugin, call [registerGlobalOrm()](./docs/functions/runtime_server_utils_orm.registerGlobalOrm.html) with the instance's config.
 
-Call useEntityManager() in a request context to get a forked EntityManager you can immediately use.
-If you are working in a different context, such as a cron job, you may call useOrm(), and manually call `fork()` to get a locally scoped EntityManager.
+Example:
 
-## API
+```ts
+import { defineConfig, type MikroORM } from "@mikro-orm/mysql";
 
-- `initOrm<T extends MikroOrmInstance = MikroOrmInstance>(config: ReturnType<typeof defineConfig>, name: string = 'default', forkOptionsFactory?: (event: H3Event<EventHandlerRequest>, name: string) => ForkOptions|undefined): Promise<T>` - Initialize a MikroORM instance with the given config. Optionally provide a name and fork options callback (called on each request where EntityManager is used; must not be async). Returns a promise that resolves with the initialized MikroORM instance.
-- `useEntityManager<T extends EntityManager = EntityManager>(event: H3Event<EventHandlerRequest>, name: string = 'default'): T` - Get an entity manager with the current request context.
-- `useOrm<T extends MikroOrmInstance = MikroOrmInstance>(name: string = 'default'): T` - Get the MikroORM instance.
-- `closeOrm(name: string = 'default', force: boolean = false)` - Close an existing MikroORM instance. The name also becomes available for reuse after close.
+export default defineNitroPlugin(async (nitro) => {
+  const orm = await registerGlobalOrm<MikroORM>(nitro, defineConfig({
+    host: '127.0.0.1',
+    user: 'root',
+    password: '',
+    dbName: 'test',
+    port: 3306,
+  }));
+
+  // any additional checks on the DB you may want to do on startup
+
+});
+```
+
+Call useEntityManager() [in a request context](./docs/functions/runtime_server_utils_orm.useEntityManager.html) or [in an island component](./docs/functions/runtime_composables_em.useEntityManager.html) to get a forked EntityManager you can immediately use.
+
+If you are working in a different context, such as a Nitro task, you may call [useOrm()](./docs/functions/runtime_server_utils_orm.useOrm.html), and manually call `fork()` to get a locally scoped EntityManager.
 
 ## Module options / Runtime options
 
 This module's options are used as defaults for runtime options, under the `mikroOrm` key.
 
-Available options:
+See [ModuleOptions](./docs/interfaces/module.ModuleOptions.html) for details.
 
-- `forkOptions` - Default fork options when calling initOrm() without a `forkOptionsFactory`, or when the `forkOptionsFactory` function returns undefined.
+## API
+
+Have a look at [the docs folder](./docs) for the full feature set.
+
+In addition to the previously mentioned functions, if more fine-grained control over the MikroORM instance is needed,
+you can also use [initOrm()](./docs/functions/runtime_server_utils_orm.initOrm.html) to init a MikroORM instance,
+without making it available for all requests. You will need to call useEntityManager() [in a request context](./docs/functions/runtime_server_utils_orm.useEntityManager.html)
+at the routes you want to enable the instance at. You should also call [closeOrm()](./docs/functions/runtime_server_utils_orm.closeOrm.html) when you are done with the instance,
+be it at a Nitro close hook, or some other time at which you know the connection needs to be closed.
 
 ## Contribution
 

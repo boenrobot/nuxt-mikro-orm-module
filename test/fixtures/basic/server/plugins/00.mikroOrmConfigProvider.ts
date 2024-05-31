@@ -1,8 +1,9 @@
-import { initOrm } from "#imports";
-import { defineConfig, type EntityManager, type MikroORM } from "@mikro-orm/mysql";
+import { registerGlobalOrm } from "#imports";
+import { defineConfig, type MikroORM } from "@mikro-orm/mysql";
+import consola from "consola";
 
-export default defineNitroPlugin(async (_nitro) => {
-  const orm = await initOrm<MikroORM>(defineConfig({
+export default defineNitroPlugin(async (nitro) => {
+  const orm = await registerGlobalOrm<MikroORM>(nitro, defineConfig({
     host: '127.0.0.1',
     user: 'root',
     password: '',
@@ -14,7 +15,7 @@ export default defineNitroPlugin(async (_nitro) => {
   }));
 
   await orm.schema.ensureDatabase({create: true});
-  const em = orm.em as EntityManager;
+  const em = orm.em;
   await em.execute(`
 CREATE TABLE IF NOT EXISTS \`products\`
 (
@@ -33,4 +34,5 @@ INSERT INTO products SET name = 'product 1'
 INSERT INTO products SET name = 'product 2'
 `);
   }
+  consola.success('DB initialized');
 });
