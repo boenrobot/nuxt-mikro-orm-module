@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.1
+
+[compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.0...v0.3.1)
+
+### 🩹 Fixes
+
+- **registerGlobalOrm:** Made it so that the nitro runtimeConfig is not cloned if not already cloned ([94822f5](https://github.com/boenrobot/nuxt-mikro-orm-module/commit/94822f5))
+
+### ❤️ Contributors
+
+- Vasil Rangelov <boen.robot@gmail.com>
+
 ## v0.3.0
 
 [compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.2.0...v0.3.0)
