@@ -188,8 +188,9 @@ export async function registerGlobalOrm<T extends MikroOrmInstance = MikroOrmIns
 
   if (typeof initTimeGlobalHooks === 'object') {
     hooks.request = (event) => {
-      event.context.nitro ??= {};
-      const runtimeOptions = useRuntimeConfig(event).mikroOrm;
+      const runtimeOptions = typeof event.context.nitro === 'undefined'
+        ? useRuntimeConfig().mikroOrm
+        : useRuntimeConfig(event).mikroOrm;
       const reqHookOptions = runtimeOptions.overrides?.[name]?.globalHooks ?? runtimeOptions.globalHooks ?? initTimeGlobalHooks;
 
       if (reqHookOptions === false) {
