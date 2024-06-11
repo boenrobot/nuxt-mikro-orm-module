@@ -1,6 +1,6 @@
 {
   "name": "nuxt-mikro-orm-module",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Nuxt MikroORM module",
   "license": "LGPL-2.1-only",
   "type": "module",
@@ -25,7 +25,7 @@
     "doc": "yarn run typedoc",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "release": "yarn run lint && yarn run doc && yarn run test && yarn run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch",
