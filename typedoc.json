@@ -1,7 +1,9 @@
 {
   "out": "docs",
-  "readme": "none",
+  "githubPages": true,
   "entryPoints": ["src"],
+  "cleanOutputDir": true,
+  "validation": true,
   "entryPointStrategy": "expand",
   "excludeExternals": true,
   "basePath": "src",

@@ -2,8 +2,7 @@
 
 Nuxt module for easy integration with MikroORM into your Nuxt application.
 
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
-- [🏀 Online playground](https://stackblitz.com/github/boenrobot/nuxt-mikro-orm-module?file=playground%2Fapp.vue)
+- [✨ &nbsp;Release Notes](https://github.com/boenrobot/nuxt-mikro-orm-module/blob/main/CHANGELOG.md)
 
 ## Quick Setup
 
@@ -13,7 +12,7 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add nuxt-mikro-orm-module
 ```
 
-After that, ideally in a Nitro plugin, call [registerGlobalOrm()](./docs/functions/runtime_server_utils_orm.registerGlobalOrm.html) with the instance's config.
+After that, ideally in a Nitro plugin, call [registerGlobalOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.registerGlobalOrm.html) with the instance's config.
 
 Example:
 
@@ -34,24 +33,24 @@ export default defineNitroPlugin(async (nitro) => {
 });
 ```
 
-Call useEntityManager() [in a request context](./docs/functions/runtime_server_utils_orm.useEntityManager.html) or [in an island component](./docs/functions/runtime_composables_em.useEntityManager.html) to get a forked EntityManager you can immediately use.
+Call useEntityManager() [in a request context](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.useEntityManager.html) or [in an island component](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_composables_em.useEntityManager.html) to get a forked EntityManager you can immediately use.
 
-If you are working in a different context, such as a Nitro task, you may call [useOrm()](./docs/functions/runtime_server_utils_orm.useOrm.html), and manually call `fork()` to get a locally scoped EntityManager.
+If you are working in a different context, such as a Nitro task, you may call [useOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.useOrm.html), and manually call `fork()` to get a locally scoped EntityManager.
 
 ## Module options / Runtime options
 
 This module's options are used as defaults for runtime options, under the `mikroOrm` key.
 
-See [ModuleOptions](./docs/interfaces/module.ModuleOptions.html) for details.
+See [ModuleOptions](https://boenrobot.github.io/nuxt-mikro-orm-module/interfaces/module.ModuleOptions.html) for details.
 
 ## API
 
-Have a look at [the docs folder](./docs) for the full feature set.
+Have a look at [the typedoc generated docs](https://boenrobot.github.io/nuxt-mikro-orm-module) for the full feature set.
 
 In addition to the previously mentioned functions, if more fine-grained control over the MikroORM instance is needed,
-you can also use [initOrm()](./docs/functions/runtime_server_utils_orm.initOrm.html) to init a MikroORM instance,
-without making it available for all requests. You will need to call useEntityManager() [in a request context](./docs/functions/runtime_server_utils_orm.useEntityManager.html)
-at the routes you want to enable the instance at. You should also call [closeOrm()](./docs/functions/runtime_server_utils_orm.closeOrm.html) when you are done with the instance,
+you can also use [initOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.initOrm.html) to init a MikroORM instance,
+without making it available for all requests. You will need to call useEntityManager() [in a request context](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.useEntityManager.html)
+at the routes you want to enable the instance at. You should also call [closeOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.closeOrm.html) when you are done with the instance,
 be it at a Nitro close hook, or some other time at which you know the connection needs to be closed.
 
 ## Contribution

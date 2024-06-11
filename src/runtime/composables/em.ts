@@ -17,7 +17,7 @@ import { NuxtMikroOrmForkUnavailable } from "../utils/errors";
  * Only then, this function can access that fork.
  *
  * Depending on the current runtimeConfig (see {@link "module"!ModuleOptions | ModuleOptions}),
- * this function may be automatically called for all routes.
+ * the utils function may be automatically called for all routes, making this one always available.
  *
  * @template T Type of the EntityManager instance. Typically, the "EntityManager" export of your MikroORM driver.
  *
