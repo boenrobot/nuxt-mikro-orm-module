@@ -5,6 +5,18 @@
 
 [compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.1...v0.4.0)
 
+### 🚀 Enhancements
+
+- **middleware:** Added the ability to do auto forking via Nitro middleware instead of Nitro hook ([9b86bbb](https://github.com/boenrobot/nuxt-mikro-orm-module/commit/9b86bbb))
+
+### ❤️ Contributors
+
+- Vasil Rangelov <boen.robot@gmail.com>
+
+## v0.4.0
+
+[compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.1...v0.4.0)
+
 ## v0.3.1
 
 [compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.0...v0.3.1)
