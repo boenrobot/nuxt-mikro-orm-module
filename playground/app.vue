@@ -1,7 +1,7 @@
 <template>
+  <h1>Nuxt module playground!</h1>
   <div>
-    Nuxt module playground!
-    <DbLog/>
+    <NuxtPage />
   </div>
 </template>
 

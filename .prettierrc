@@ -1,0 +1,12 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "singleAttributePerLine": true,
+  "semi": true,
+  "endOfLine": "lf",
+  "tabWidth": 2,
+  "vueIndentScriptAndStyle": false,
+  "printWidth": 120,
+  "quoteProps": "consistent",
+  "proseWrap": "preserve"
+}

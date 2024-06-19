@@ -17,6 +17,7 @@ After that, ideally in a Nitro plugin, call [registerGlobalOrm()](https://boenro
 Example:
 
 ```ts
+// server/plugins/db.ts
 import { defineConfig, type MikroORM } from "@mikro-orm/mysql";
 
 export default defineNitroPlugin(async (nitro) => {
@@ -43,15 +44,43 @@ This module's options are used as defaults for runtime options, under the `mikro
 
 See [ModuleOptions](https://boenrobot.github.io/nuxt-mikro-orm-module/interfaces/module.ModuleOptions.html) for details.
 
+## Per route auto forking
+
+By default, when using [registerGlobalOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.registerGlobalOrm.html),
+all requests get a fork of the instance, which is what you will want in most cases.
+
+You may turn off this auto fork for some routes if you set in your Nuxt config the `autoForking` option to `middleware`,
+and then add `mikroOrm: false` to the routes you want to disable auto forking on.
+
+e.g.
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-mikro-orm-module'],
+  routeRules: {
+    '/about': { mikroOrm: false },
+  },
+  mikroOrm: {
+    autoForking: 'middleware',
+  },
+  devtools: {
+    enabled: true,
+  },
+});
+```
+
 ## API
 
 Have a look at [the typedoc generated docs](https://boenrobot.github.io/nuxt-mikro-orm-module) for the full feature set.
 
-In addition to the previously mentioned functions, if more fine-grained control over the MikroORM instance is needed,
-you can also use [initOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.initOrm.html) to init a MikroORM instance,
-without making it available for all requests. You will need to call useEntityManager() [in a request context](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.useEntityManager.html)
-at the routes you want to enable the instance at. You should also call [closeOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.closeOrm.html) when you are done with the instance,
-be it at a Nitro close hook, or some other time at which you know the connection needs to be closed.
+In addition to the previously mentioned functions and options,
+if even more fine-grained control over the MikroORM instance is needed,
+you can also use [initOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.initOrm.html)
+to init a MikroORM instance, without making it auto forked for requests.
+You will need to call useEntityManager() [in a request context](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.useEntityManager.html)
+at the routes you want to enable the instance at.
+You should also call [closeOrm()](https://boenrobot.github.io/nuxt-mikro-orm-module/functions/runtime_server_utils_orm.closeOrm.html)
+when you are done with the instance, be it at a Nitro close hook, or some other time at which you know the connection needs to be closed.
 
 ## Contribution
 

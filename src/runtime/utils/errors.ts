@@ -24,8 +24,7 @@ export class NuxtMikroOrmModuleError extends Error {
 /**
  * Thrown when trying to access a MikroORM that is not initialized.
  */
-export class NuxtMikroOrmNotInitialized extends NuxtMikroOrmModuleError {
-}
+export class NuxtMikroOrmNotInitialized extends NuxtMikroOrmModuleError {}
 
 /**
  * Thrown when attempting to initialize a MikroORM instance that is already initialized.

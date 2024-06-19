@@ -1,8 +1,9 @@
-import { fileURLToPath } from 'node:url'
-import { describe, it, expect } from 'vitest'
-import { setup, $fetch } from '@nuxt/test-utils/e2e'
+import { fileURLToPath } from 'node:url';
 
-describe('ssr', async () => {
+import { $fetch, setup } from '@nuxt/test-utils/e2e';
+import { describe, expect, it } from 'vitest';
+
+describe('basic', async () => {
   await setup({
     rootDir: fileURLToPath(new URL('./fixtures/basic', import.meta.url)),
   });
@@ -13,4 +14,4 @@ describe('ssr', async () => {
     expect(html).toContain('<div>basic</div>');
     expect(html).toContain('This is only rendered on the server. Product: product 1');
   });
-})
+});

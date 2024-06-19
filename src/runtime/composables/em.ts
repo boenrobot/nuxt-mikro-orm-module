@@ -1,7 +1,7 @@
-import type { EventHandlerRequest, H3Event } from "h3";
-import type { EntityManager } from "@mikro-orm/core";
-import { NuxtMikroOrmForkUnavailable } from "../utils/errors";
+import type { EntityManager } from '@mikro-orm/core';
+import type { EventHandlerRequest, H3Event } from 'h3';
 
+import { NuxtMikroOrmForkUnavailable } from '../utils/errors';
 
 /**
  * Use the request's EntityManager.
@@ -11,9 +11,9 @@ import { NuxtMikroOrmForkUnavailable } from "../utils/errors";
  * Unlike {@link "runtime/server/utils/orm"!useEntityManager | its "utils" counterpart of the same name},
  * it does not automatically fork the ORM instance.
  * The ORM instance must have been forked previously with the other function,
- * at any point in which it has access to the request event,
- * like a "request" hook from a Nitro plugin,
- * or a defineRequestEvent() handler function.
+ * at any point in which it has access to the request event.
+ * These include a "request" hook from a Nitro plugin,
+ * a Nuxt server plugin, or a defineRequestEvent() handler function.
  * Only then, this function can access that fork.
  *
  * Depending on the current runtimeConfig (see {@link "module"!ModuleOptions | ModuleOptions}),
@@ -27,17 +27,21 @@ import { NuxtMikroOrmForkUnavailable } from "../utils/errors";
  *
  * @return The request's associated EntityManager fork.
  *
- * @throws {@link "runtime/utils/errors"!NuxtMikroOrmForkUnavailable | NuxtMikroOrmForkUnavailable} When trying to use an instance that wasn't
- * forked previously.
+ * @throws {@link "runtime/utils/errors"!NuxtMikroOrmForkUnavailable | NuxtMikroOrmForkUnavailable} When trying to use
+ * an instance that wasn't forked previously.
  */
-export function useEntityManager<T extends EntityManager = EntityManager>(event: H3Event<EventHandlerRequest>, name: string = 'default'): T {
+export function useEntityManager<T extends EntityManager = EntityManager>(
+  event: H3Event<EventHandlerRequest>,
+  name: string = 'default',
+): T {
   const em = event.context.mikroOrmEntityManagers?.[name];
   if (!em) {
     throw new NuxtMikroOrmForkUnavailable(
       import.meta.dev
-        ? `MikroORM instance "${name}" is either not initialized, or not forked for this request. Create a nitro plugin in which you call either initOrm() or registerGlobalOrm(), and call useEntityManager() at any point before rendering of .vue files, which has access to the request event ("request" hook in a Nitro module, or a defineEventHandler() handler function in Nuxt).`
+        ? `MikroORM instance "${name}" is either not initialized, or not forked for this request. Create a nitro plugin in which you call either initOrm() or registerGlobalOrm(), and call useEntityManager() at any point before rendering of .vue files. Any point which has access to the request event will do ("request" hook in a Nitro module, Nuxt plugin, or a defineEventHandler() handler function in Nuxt).`
         : `MikroORM instance "${name}" is either not initialized, or not forked for this request`,
-      name);
+      name,
+    );
   }
   return em as T;
 }

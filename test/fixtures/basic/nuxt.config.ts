@@ -1,22 +1,16 @@
-import NuxtMikroOrmModule from '../../../src/module'
+import NuxtMikroOrmModule from '../../../src/module';
 
 export default defineNuxtConfig({
   ssr: true,
-  modules: [
-    NuxtMikroOrmModule,
-  ],
+  modules: [NuxtMikroOrmModule],
   experimental: {
     componentIslands: true,
   },
-  logLevel: "verbose",
+  logLevel: 'verbose',
   nitro: {
     logLevel: 0,
-    logging: {
-      compressedSizes: true,
-      buildSuccess: true,
-    }
   },
   devtools: {
     enabled: true,
   },
-})
+});

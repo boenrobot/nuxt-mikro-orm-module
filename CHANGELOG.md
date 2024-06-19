@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v0.4.0
+
+[compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.1...v0.4.0)
+
 ## v0.3.1
 
 [compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.0...v0.3.1)

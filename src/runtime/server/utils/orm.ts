@@ -1,16 +1,11 @@
-import { useRuntimeConfig } from "#imports";
-import { type defineConfig, MikroORM, type ForkOptions, type EntityManager } from "@mikro-orm/core";
-import { type EventHandlerRequest, type H3Event } from "h3";
-import { type ForkOptionsFactory } from "~/src/module";
+import { type defineConfig, type EntityManager, type ForkOptions, MikroORM } from '@mikro-orm/core';
+import { type EventHandlerRequest, type H3Event } from 'h3';
 import { type NitroApp, type NitroRuntimeHooks } from 'nitropack';
-import { NuxtMikroOrmNotInitialized, NuxtMikroOrmAlreadyInitialized } from "../../utils/errors";
-import consolaRoot from 'consola';
 
-const consola = consolaRoot.withTag('MikroORM');
+import { useRuntimeConfig } from '#imports';
 
-type MikroOrmInstance = Awaited<ReturnType<typeof MikroORM['init']>>;
-
-const ormInstances = new Map<string, {instance: MikroOrmInstance, forkOptions?: ForkOptionsFactory | ForkOptions}>();
+import { NuxtMikroOrmAlreadyInitialized, NuxtMikroOrmNotInitialized } from '../../utils/errors';
+import { consola, handleRequestEvent, type MikroOrmInstance, ormInstances } from './internal/orm';
 
 /**
  * Closes an instance.
@@ -25,16 +20,23 @@ const ormInstances = new Map<string, {instance: MikroOrmInstance, forkOptions?: 
  *
  * @return A promise that resolves once the MikroORM instance is closed, and the name is unregistered.
  */
-export async function closeOrm(name: string = 'default', force?: boolean)
-{
-  await ormInstances.get(name)?.instance.close(force ?? useRuntimeConfig().mikroOrm.overrides?.[name]?.forceClose ?? useRuntimeConfig().mikroOrm.forceClose ?? false);
+export async function closeOrm(name: string = 'default', force?: boolean) {
+  await ormInstances
+    .get(name)
+    ?.instance.close(
+      force ??
+        useRuntimeConfig().mikroOrm.overrides?.[name]?.forceClose ??
+        useRuntimeConfig().mikroOrm.forceClose ??
+        false,
+    );
   ormInstances.delete(name);
 }
 
 /**
  * Use an existing MikroORM instance.
  *
- * @template T Type of the MikroORM instance. Typically, the "MikroORM" export of your MikroORM driver.
+ * @template T Type of the MikroORM instance.
+ * Typically, the `MikroORM` export of your MikroORM driver.
  *
  * @param name The name of the instance.
  *
@@ -56,7 +58,11 @@ export function useOrm<T extends MikroOrmInstance = MikroOrmInstance>(name: stri
  *
  * Initializes a MikroORM instance, and inherently making it available for future forks.
  *
- * @template T Type of the MikroORM instance. Typically, the "MikroORM" export of your MikroORM driver.
+ * No Nitro hooks are registered for the isntance, and auto forking only works with middleware,
+ * if allowed by the runtime config.
+ *
+ * @template T Type of the MikroORM instance.
+ * Typically, the `MikroORM` export of your MikroORM driver.
  *
  * @param config The config to use for the new instance.
  * @param name The name to set for this instance.
@@ -71,7 +77,7 @@ export function useOrm<T extends MikroOrmInstance = MikroOrmInstance>(name: stri
 export async function initOrm<T extends MikroOrmInstance = MikroOrmInstance>(
   config: ReturnType<typeof defineConfig>,
   name: string = 'default',
-  forkOptionsFactory?: (event: H3Event<EventHandlerRequest>, name: string) => ForkOptions|undefined
+  forkOptionsFactory?: (event: H3Event<EventHandlerRequest>, name: string) => ForkOptions | undefined,
 ): Promise<T> {
   if (ormInstances.has(name)) {
     throw new NuxtMikroOrmAlreadyInitialized(`MikroORM instance with name "${name}" is already initialized`, name);
@@ -82,7 +88,10 @@ export async function initOrm<T extends MikroOrmInstance = MikroOrmInstance>(
   const moduleRuntimeConfig = useRuntimeConfig().mikroOrm;
   const forkOptions = moduleRuntimeConfig.overrides?.[name]?.forkOptions ?? moduleRuntimeConfig.forkOptions;
 
-  ormInstances.set(name, {instance: orm, forkOptions: forkOptionsFactory ?? forkOptions});
+  ormInstances.set(name, {
+    instance: orm,
+    forkOptions: forkOptionsFactory ?? forkOptions,
+  });
 
   return orm as T;
 }
@@ -91,7 +100,7 @@ export async function initOrm<T extends MikroOrmInstance = MikroOrmInstance>(
  * Use the request's EntityManager.
  *
  * This function is intended for use at any point where you have access to the request event,
- * such as "request" hooks in Nitro plugins, or defineEventHandler() handler functions.
+ * such as "request" hooks in Nitro plugins, Nuxt server plugins, or defineEventHandler() handler functions.
  *
  * Depending on the current runtimeConfig (see {@link "module"!ModuleOptions | ModuleOptions}),
  * this function may be automatically called for all routes.
@@ -102,7 +111,8 @@ export async function initOrm<T extends MikroOrmInstance = MikroOrmInstance>(
  * When using island components, this function must be called before the island component is rendered,
  * so that the other function has access to the now forked EntityManager.
  *
- * @template T Type of the EntityManager instance. Typically, the "EntityManager" export of your MikroORM driver.
+ * @template T Type of the EntityManager instance.
+ * Typically, the `EntityManager` export of your MikroORM driver.
  *
  * @param event The associated request of the EntityManager.
  * @param name The name of the MikroORM instance to fork.
@@ -113,8 +123,10 @@ export async function initOrm<T extends MikroOrmInstance = MikroOrmInstance>(
  * with {@link initOrm} or {@link registerGlobalOrm}.
  *
  */
-export function useEntityManager<T extends EntityManager = EntityManager>(event: H3Event<EventHandlerRequest>, name: string = 'default'): T
-{
+export function useEntityManager<T extends EntityManager = EntityManager>(
+  event: H3Event<EventHandlerRequest>,
+  name: string = 'default',
+): T {
   const existingRequestInstance = event.context.mikroOrmEntityManagers?.[name];
   if (existingRequestInstance) {
     return existingRequestInstance as T;
@@ -130,8 +142,8 @@ export function useEntityManager<T extends EntityManager = EntityManager>(event:
     forkOptions = forkOptions(event, name);
   }
   if (!forkOptions) {
-    event.context.nitro ??= {};
-    const runtimeConfig = useRuntimeConfig(event).mikroOrm;
+    const runtimeConfig =
+      typeof event.context.nitro === 'undefined' ? useRuntimeConfig().mikroOrm : useRuntimeConfig(event).mikroOrm;
     forkOptions = runtimeConfig.overrides?.[name]?.forkOptions ?? runtimeConfig.forkOptions ?? {};
   }
 
@@ -149,7 +161,7 @@ export function useEntityManager<T extends EntityManager = EntityManager>(event:
  * Limited configuration of the request hook is available as part of {@link "module"!ModuleOptions | ModuleOptions}.
  *
  * If you need more fine-grained permissions for ORM instances,
- * consider setting "globalHooks" to "false", and do whatever checks you need,
+ * consider setting "routeOptions" to "false", and do whatever checks you need,
  * either in a "request" hook from a Nitro plugin,
  * or in a defineRequestEvent() handler function.
  *
@@ -157,7 +169,8 @@ export function useEntityManager<T extends EntityManager = EntityManager>(event:
  * and unregisters the hooks it registered after the ORM closes successfully.
  * Whether the closing of the ORM is forced or not can be controlled with the runtime config.
  *
- * @template T Type of the MikroORM instance. Typically, the "MikroORM" export of your MikroORM driver.
+ * @template T Type of the MikroORM instance.
+ * Typically, the `MikroORM` export of your MikroORM driver.
  *
  * @param nitro The nitro app to add hooks to.
  * @param config The config to use for the new instance.
@@ -172,12 +185,9 @@ export async function registerGlobalOrm<T extends MikroOrmInstance = MikroOrmIns
   nitro: NitroApp,
   config: ReturnType<typeof defineConfig>,
   name: string = 'default',
-  forkOptionsFactory?: (event: H3Event<EventHandlerRequest>, name: string) => ForkOptions|undefined,
+  forkOptionsFactory?: (event: H3Event<EventHandlerRequest>, name: string) => ForkOptions | undefined,
 ): Promise<T> {
   const orm = await initOrm<T>(config, name, forkOptionsFactory);
-
-  const initTimeConfig = useRuntimeConfig().mikroOrm;
-  const initTimeGlobalHooks = initTimeConfig.overrides?.[name]?.globalHooks ?? initTimeConfig.globalHooks ?? true;
 
   const hooks: Partial<NitroRuntimeHooks> = {
     close: async () => {
@@ -186,49 +196,39 @@ export async function registerGlobalOrm<T extends MikroOrmInstance = MikroOrmIns
     },
   };
 
-  if (typeof initTimeGlobalHooks === 'object') {
-    hooks.request = (event) => {
-      const runtimeOptions = typeof event.context.nitro === 'undefined'
-        ? useRuntimeConfig().mikroOrm
-        : useRuntimeConfig(event).mikroOrm;
-      const reqHookOptions = runtimeOptions.overrides?.[name]?.globalHooks ?? runtimeOptions.globalHooks ?? initTimeGlobalHooks;
+  const initTimeConfig = useRuntimeConfig().mikroOrm;
 
-      if (reqHookOptions === false) {
-        return;
-      }
+  const autoForking = initTimeConfig.overrides?.[name]?.autoForking ?? initTimeConfig.autoForking ?? 'hook';
+  if (autoForking === 'hook') {
+    const initTimeGlobalHooks = initTimeConfig.overrides?.[name]?.routeOptions ?? initTimeConfig.routeOptions ?? true;
 
-      if (reqHookOptions === true) {
-        useEntityManager(event, name);
-        return;
-      }
-
-      if (event.path.startsWith('/api/')) {
-        if (reqHookOptions.api) {
-          useEntityManager(event, name);
-        }
-        return;
-      }
-
-      if (event.path.startsWith('/__nuxt_island/')) {
-        if (reqHookOptions.islandComponents) {
-          useEntityManager(event, name);
-        }
-        return;
-      }
-
-      if (reqHookOptions.routes) {
-        useEntityManager(event, name);
-      }
-    }
-
-    consola.debug(`Instance ${name} was registered globally with per request handler. Init time options: `, initTimeGlobalHooks);
-  } else {
-    if (initTimeGlobalHooks) {
+    if (typeof initTimeGlobalHooks === 'object') {
       hooks.request = (event) => {
-        useEntityManager(event, name);
+        const runtimeOptions =
+          typeof event.context.nitro === 'undefined' ? useRuntimeConfig().mikroOrm : useRuntimeConfig(event).mikroOrm;
+        const routeOptions =
+          runtimeOptions.overrides?.[name]?.routeOptions ?? runtimeOptions.routeOptions ?? initTimeGlobalHooks;
+
+        handleRequestEvent(event, routeOptions, name);
       };
 
-      consola.debug(`Instance "${name}" was registered globally with universal request handler`);
+      consola.debug(
+        `Instance ${name} was registered globally with per request hook handler. Init time options: `,
+        initTimeGlobalHooks,
+      );
+    } else {
+      if (initTimeGlobalHooks) {
+        hooks.request = (event) => {
+          useEntityManager(event, name);
+        };
+
+        consola.debug(`Instance "${name}" was registered globally with universal request handler`);
+      }
+    }
+  } else {
+    consola.debug(`Skipping adding request hook for "${name}"`);
+    if (autoForking === 'middleware') {
+      consola.debug(`Will fork "${name}" in a middleware instead`);
     }
   }
 

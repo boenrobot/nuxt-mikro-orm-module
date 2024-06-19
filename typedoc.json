@@ -7,5 +7,6 @@
   "entryPointStrategy": "expand",
   "excludeExternals": true,
   "basePath": "src",
+  "excludeInternal": true,
   "useTsLinkResolution": true
 }

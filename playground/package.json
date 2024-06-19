@@ -3,8 +3,8 @@
   "name": "my-module-playground",
   "type": "module",
   "scripts": {
-    "dev": "nuxi dev",
-    "prod": "node ./.output/server/index.mjs",
+    "dev": "cross-env-shell CONSOLA_LEVEL=4 NODE_OPTIONS=\"--enable-source-maps\" nuxi dev",
+    "prod": "cross-env-shell CONSOLA_LEVEL=4 NODE_OPTIONS=\"--enable-source-maps\" node ./.output/server/index.mjs",
     "build": "nuxi build",
     "generate": "nuxi generate"
   },

@@ -1,7 +1,6 @@
 <template>
   <div>basic</div>
-  <DbLog/>
+  <DbLog />
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
