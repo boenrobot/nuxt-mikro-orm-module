@@ -27,7 +27,7 @@
     "doc": "yarn run typedoc",
     "format": "prettier --write ./src ./test",
     "lint": "eslint --fix .",
-    "postinstall": "husky",
+    "prepare": "husky || echo \"\"",
     "chores": "yarn run format && yarn run lint && yarn run format && yarn run doc",
     "release": "yarn run chores && yarn run test && yarn run prepack && changelogen --release && npm publish && git push --follow-tags",
     "test": "vitest run",
