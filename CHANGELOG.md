@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.4.1
+
+[compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.4.0...v0.4.1)
+
+### 🩹 Fixes
+
+- **install:** Fixed install breaking due to husky ([0c38b4a](https://github.com/boenrobot/nuxt-mikro-orm-module/commit/0c38b4a))
+
+### ❤️ Contributors
+
+- Vasil Rangelov <boen.robot@gmail.com>
+
 ## v0.4.0
 
 [compare changes](https://github.com/boenrobot/nuxt-mikro-orm-module/compare/v0.3.1...v0.4.0)

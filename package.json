@@ -1,6 +1,6 @@
 {
   "name": "nuxt-mikro-orm-module",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Nuxt MikroORM module",
   "license": "LGPL-2.1-only",
   "type": "module",
